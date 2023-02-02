@@ -2,9 +2,9 @@
 
 A tictactoe game with intentional buffer overflow vulnerabilities for Stanford ZERO team practice!
 
-tictactoe.c game drive
+`tictactoe.c` game drive
 
-game.c, game.h gameplay 
+`game.c, game.h` gameplay 
 
 
 level 0:
