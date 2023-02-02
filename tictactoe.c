@@ -1,6 +1,4 @@
-#include <stdio.h>
-#incldue <string.h>
-#include <stdlib.h>
+#include "tictactoe.h"
 
 
 int login(char *username, char *password)
