@@ -6,13 +6,28 @@ def client_error_wrapper(error_msg):
 	print(error_msg)
 	print("*"*len(str(error_msg)))
 
+NET_ORDER = "big"
+
 class TicTacToe(object):
 	"""interact with Stanford ZERO fun/vulnerable tic tac toe server"""
-	GET_VERSION_PKT = b"\x03"
-	def __init__(self, connect_tuple):
+	GET_VERSION_PKT = b"\x00"
+	def __init__(self, connect_tuple, debug = True):
 		super(TicTacToe, self).__init__()
 		self.connect_tuple = connect_tuple
 		self.server_conn = None
+		self.debug = debug
+
+	def read_resposne(self):
+		resp_len = self.server_conn.recv(4)
+		if len(resp_len) != 4:
+			client_error_wrapper("unable to read resposne length")
+			raise Exception("need at least 4 bytes in resposne")
+		resp_len = int.from_bytes(resp_len, NET_ORDER)
+		if self.debug:
+			print("getting msg resposne len:", resp_len)
+
+		resp_data = self.server_conn.recv(resp_len)
+		return resp_data
 
 	def connect(self):
 		try:
@@ -23,15 +38,15 @@ class TicTacToe(object):
 			raise
 
 	def get_version(self):
-		self.server_conn.sendall(GET_VERSION_PKT)
-		return self.server_conn.recv(0x1000)
+		self.server_conn.sendall(TicTacToe.GET_VERSION_PKT)
+		return self.read_resposne()
 
 def play(connect_tuple):
 	game = TicTacToe(connect_tuple)
 	print("connecting")
 	game.connect()
 	print("connected")
-	print()
+	print(game.get_version())
 
 
 

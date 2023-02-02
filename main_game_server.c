@@ -56,7 +56,7 @@ int main (int argc, char *argv[]) {
             perror("Could not establish new connection\n");
         }
 
-        char client_conn_str_temp[0x100];
+        char client_conn_str_temp[0x100] = {0};
         snprintf(client_conn_str_temp, sizeof(client_conn_str_temp), \
             "%s:%d", inet_ntoa(client.sin_addr), ntohs(client.sin_port));
         handle_client(client_fd, strdup(client_conn_str_temp)); // inside game_dispatcher
