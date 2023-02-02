@@ -5,7 +5,7 @@ A tictactoe game with intentional buffer overflow vulnerabilities for Stanford Z
 `main_game_server.c` game drive
 `client.py` client 
 
-`game.c, game.h` gameplay 
+`tictactoe.c, tictactoe.h` gameplay 
 
 `high_score.c, high_score.h` scores/game history
 
