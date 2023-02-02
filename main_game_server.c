@@ -4,84 +4,63 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <string.h>
+#include <arpa/inet.h>
 
-#define BUFFER_SIZE 1024
-#define on_error(...) { fprintf(stderr, __VA_ARGS__); fflush(stderr); exit(1); }
+#include "helper.h"
+#include "game_dispatcher.h"
 
-// todo: assert pkt_type/int is of len 4
-
-void handle_client(int client_fd) {
-  int pkt_type;
-  int bytes_read;
-
-  while (1) {
-    bytes_read = recv(client_fd, buf, 4, 0);
-
-    if (bytes_read != 4) {
-      on_error("didn't read enough bytes for type :(");
-    }
-
-    switch(pkt_type) {
-    case 0:
-      // handle pkt type 0
-      printf("stub code will handle pkt type 0\n");
-      break;
-    case 1:
-      printf("stub code will handle pkt type 1\n");
-      break;
-
-    default:
-      printf("stub code will handle unknown pkt type 1\n");
-      break;    
-    }
-  }
-}
+#define MAX_CONNECTIONS (10)
 
 int main (int argc, char *argv[]) {
-  if (argc < 2) on_error("Usage: %s [port]\n", argv[0]);
+    uses_assumed_sizes();
 
-  int port = atoi(argv[1]);
+    int server_fd, client_fd, err;
+    struct sockaddr_in server, client;
 
-  int server_fd, client_fd, err;
-  struct sockaddr_in server, client;
-  char buf[BUFFER_SIZE];
+    server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (server_fd < 0) {
+        perror("Could not create socket\n");
+    }
 
-  server_fd = socket(AF_INET, SOCK_STREAM, 0);
-  if (server_fd < 0) on_error("Could not create socket\n");
+    server.sin_family = AF_INET;
+    server.sin_port = 0; // bind will choose random port
+    server.sin_addr.s_addr = htonl(INADDR_ANY);
 
-  server.sin_family = AF_INET;
-  server.sin_port = htons(port);
-  server.sin_addr.s_addr = htonl(INADDR_ANY);
+    int opt_val = 1;
+    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt_val, sizeof opt_val);
 
-  int opt_val = 1;
-  setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt_val, sizeof opt_val);
+    err = bind(server_fd, (struct sockaddr *) &server, sizeof(server));
+    if (err < 0) {
+        perror("Could not bind socket\n");
+    }
 
-  err = bind(server_fd, (struct sockaddr *) &server, sizeof(server));
-  if (err < 0) on_error("Could not bind socket\n");
+    err = listen(server_fd, MAX_CONNECTIONS);
+    if (err < 0) {
+        perror("Could not listen on socket\n");
+    }
 
-  err = listen(server_fd, 128);
-  if (err < 0) on_error("Could not listen on socket\n");
+    socklen_t len = sizeof(server);
+    if (getsockname(server_fd, (struct sockaddr *)&server, &len) == -1) {
+        perror("Couldn't get binded socket port");
+    }
+    else {
+        printf("Server is listening on port %d\n", ntohs(server.sin_port));
+    }
 
-  printf("Server is listening on %d\n", port);
+    while (1) {
+        socklen_t client_len = sizeof(client);
+        client_fd = accept(server_fd, (struct sockaddr *) &client, &client_len);
 
-  while (1) {
-    socklen_t client_len = sizeof(client);
-    client_fd = accept(server_fd, (struct sockaddr *) &client, &client_len);
+        if (client_fd < 0) {
+            perror("Could not establish new connection\n");
+        }
 
-    if (client_fd < 0) on_error("Could not establish new connection\n");
+        char client_conn_str_temp[0x100];
+        snprintf(client_conn_str_temp, sizeof(client_conn_str_temp), \
+            "%s:%d", inet_ntoa(client.sin_addr), ntohs(client.sin_port));
+        handle_client(client_fd, strdup(client_conn_str_temp)); // inside game_dispatcher
+    }
 
-    handle_client(client_fd);
-
-    // while (1) {
-    //   int read = recv(client_fd, buf, BUFFER_SIZE, 0);
-
-    //   if (!read) break; // done reading
-    //   if (read < 0) on_error("Client read failed\n");
-
-    //   err = send(client_fd, buf, read, 0);
-    //   if (err < 0) on_error("Client write failed\n");
-    // }
-  }
-
-  return 0;
+    return 0;
 }
