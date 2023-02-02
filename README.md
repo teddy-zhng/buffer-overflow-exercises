@@ -15,6 +15,8 @@ gameplay
 `tictactoe`
 `high_score` 
 
+-----------------
+Welcome to our tic tac toe game! Please complete each level in ascending order, and try not to look at the code in a level you haven't gotten to yet!
 
 level 0:
 
