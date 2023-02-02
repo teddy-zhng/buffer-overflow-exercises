@@ -11,7 +11,7 @@ client code `client.py`
 
 code for logging in `account_login` 
 
-gameplay 
+gameplay (intentional vulns are in these)
 `tictactoe`
 `high_score` 
 
