@@ -7,11 +7,12 @@
 #include <sys/socket.h>
 
 #include "tictactoe.h"
+#include "high_score.h"
 
 //TODO make sure each game has their own board, client_fd etc
 //this is just a visualization of what it'd look like for each player
 
-enum Player board[][] = { //(0, 0) top left, (2, 2) bottom right
+enum Player board[__BOARD_SIZE__][__BOARD_SIZE__] = { //(0, 0) top left, (2, 2) bottom right
     {E, E, E}, 
     {E, E, E}, 
     {E, E, E}  
@@ -22,6 +23,8 @@ bool handle_place(int client_fd, char* client_str) {
     int x_coord = (int)( *( client_str + sizeof(int)) );
     int y_coord = (int)( *( client_str + sizeof(int) * 2) );
     board[x_coord][y_coord] = player;
+
+    return 0;
 }
 
 //should we send the whole board as a (9 * 4) byte string instead? modify client/how we send this
@@ -31,6 +34,8 @@ bool handle_read_board(int client_fd, char* client_str) {
             //send the info at each location
         }
     }
+
+    return 0;
 }
 
 bool handle_get_winner(int client_fd) {
@@ -51,7 +56,7 @@ bool handle_get_winner(int client_fd) {
             (board[0][i] == board[1][i]) && 
             (board[0][i] == board[2][i]))
 
-            return(board[0][i];
+            winner = board[0][i];
     }
     // check diagonals
     if ((board[0][0] != E) && 
@@ -66,8 +71,9 @@ bool handle_get_winner(int client_fd) {
 
         winner = board[2][0];
 
-    //send winner bac
-
-    return 1;//what to return for status?
+    //send winner to db stub code
+    add_winner(client_fd, winner);
+    
+    return 0;//what to return for status?
 
 }

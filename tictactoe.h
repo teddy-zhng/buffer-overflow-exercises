@@ -1,4 +1,4 @@
-#infndef __TICTACTOE__
+#ifndef __TICTACTOE__
 #define __TICTACTOE__
 #define __BOARD_SIZE__ 3
 
