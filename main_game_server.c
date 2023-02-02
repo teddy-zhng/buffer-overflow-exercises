@@ -20,23 +20,23 @@
 
 typedef struct dirent dirent;
 
-#define PORT 5555							//Defines the Port Address
-#define BACKLOG 10							//Defines the Queue size for Listen
+#define PORT 5555                           //Defines the Port Address
+#define BACKLOG 10                          //Defines the Queue size for Listen
 
 
 //Global Var
-int sockfd;	//This is the file descriptor for the servers socket connection
-fd_set connections;	//Creates a list which manages all incoming requests
+int sockfd; //This is the file descriptor for the servers socket connection
+fd_set connections; //Creates a list which manages all incoming requests
 //char client_path[BUFSIZ];
 int dirs_to_ignore;
 
 void new()
 {
-	//This 'Paragraph' is mundane, merely Establishes a connection.
-	struct sockaddr_in client_addr;
-	int sin_size = sizeof(struct sockaddr_in);							//This is need because only a reference can be passed (accept takes a non-int parameter)
-	int curfd = error(accept(sockfd, (struct sockaddr *) &client_addr, (socklen_t *) &sin_size), "accept");		//Set current fd to the accept client connection
-	printf("Connection Made\n");
+    //This 'Paragraph' is mundane, merely Establishes a connection.
+    struct sockaddr_in client_addr;
+    int sin_size = sizeof(struct sockaddr_in);                          //This is need because only a reference can be passed (accept takes a non-int parameter)
+    int curfd = error(accept(sockfd, (struct sockaddr *) &client_addr, (socklen_t *) &sin_size), "accept");     //Set current fd to the accept client connection
+    printf("Connection Made\n");
 }
 
 
@@ -64,20 +64,20 @@ void socketoptions()
 
 void establish(struct sockaddr_in * addr)
 {
-	//Create a Internet Domain Stream Socket
-	sockfd = error(socket(AF_INET, SOCK_STREAM, 0), "socket");
-	
-	//printf("%d\n",addr->sin_port );
+    //Create a Internet Domain Stream Socket
+    sockfd = error(socket(AF_INET, SOCK_STREAM, 0), "socket");
+    
+    //printf("%d\n",addr->sin_port );
 
-	//Puts this computer's address and the specified PORT number into the struct, sets it to AF_INET, and zeroes sin_zero 
-	setup(addr);
+    //Puts this computer's address and the specified PORT number into the struct, sets it to AF_INET, and zeroes sin_zero 
+    setup(addr);
 
-	//Set the Options for the socket, particularly Re-Use of the PORT
-	socketoptions();
+    //Set the Options for the socket, particularly Re-Use of the PORT
+    socketoptions();
 
-	//printf("%d\n",addr->sin_port );
-	
-	//Register the socket with the OS
+    //printf("%d\n",addr->sin_port );
+    
+    //Register the socket with the OS
     error(bind(sockfd, (struct sockaddr *) addr, sizeof(struct sockaddr)), "bind");
     
     //Start waiting for incoming signals, and cap the queue at BACKLOG
@@ -86,18 +86,18 @@ void establish(struct sockaddr_in * addr)
 
 void build_select_list()
 {
-    FD_ZERO(&connections);					//Zero all values/clear
+    FD_ZERO(&connections);                  //Zero all values/clear
 
-    FD_SET(sockfd, &connections);			//Ensures that the Set will listen to the socket.
+    FD_SET(sockfd, &connections);           //Ensures that the Set will listen to the socket.
     
-    FD_SET(0, &connections);				//Allows Listening on stdin
+    FD_SET(0, &connections);                //Allows Listening on stdin
 }
 
 void initialize()
 {
-	struct sockaddr_in my_addr;
-	
-	//Creates all the settings for the socket    
+    struct sockaddr_in my_addr;
+    
+    //Creates all the settings for the socket    
     establish(&my_addr);
 
     printf("The Server is now active on Port: %d \n", PORT);
@@ -108,44 +108,42 @@ void initialize()
 
 int terminate()
 {
-	char temp[BUFSIZ];
-	char * asses = fgets( temp, BUFSIZ, stdin);
-	lower(temp);
+    char temp[BUFSIZ];
+    char * asses = fgets( temp, BUFSIZ, stdin);
+    lower(temp);
     return ( !asses || !strcmp(temp, "q\n") || !strcmp(temp,"quit\n") );
-    //	return 1;
-    //return 0;
 }
 
 int check()
 {
-	if (FD_ISSET(sockfd, &connections))
-	{
-			new();
-	}
-	else if (FD_ISSET(0, &connections))
-	{
-		printf("Terminating\n");
-		return terminate();
-	}
-	return 0;
+    if (FD_ISSET(sockfd, &connections))
+    {
+        new();
+    }
+    else if (FD_ISSET(0, &connections))
+    {
+        printf("Terminating\n");
+        return terminate();
+    }
+    return 0;
 }
 
 void run()
 {
-	build_select_list();	//Can be added to main for line count if needed
-	while( error(select(FD_SETSIZE, &connections, NULL, NULL, NULL), "select") > 0 )		//error(accept(sockfd, (struct sockaddr *) &client_addr, (socklen_t *) &sin_size), "accept")
-	{
-		printf("Slected\n");
-		if( check() )
-			return;
-		build_select_list();	//This may need to come before check
-	}
+    build_select_list();    //Can be added to main for line count if needed
+    while( error(select(FD_SETSIZE, &connections, NULL, NULL, NULL), "select") > 0 )        //error(accept(sockfd, (struct sockaddr *) &client_addr, (socklen_t *) &sin_size), "accept")
+    {
+        printf("Slected\n");
+        if( check() )
+            return;
+        build_select_list();    //This may need to come before check
+    }
 }
 
 void disengage()
 {
-	int pid, status;
-	//Shutsdown the socket
+    int pid, status;
+    //Shutsdown the socket
     shutdown(sockfd, SHUT_RDWR);
     
     //Terminates/Closes the Socket
@@ -155,23 +153,22 @@ void disengage()
     //Prevent Zombification
     while ( ( pid = wait(&status) ) > 0)
     {
-    	printf("%d completed with status : %d\n",pid, status );
+        printf("%d completed with status : %d\n",pid, status );
     }
-
 }
 
 int main()
 {
-	//Prints Inital message and intializes connections
-	initialize();
+    //Prints Inital message and intializes connections
+    initialize();
 
-	setbuf(stdout,0);	//For Debug Purposes
+    setbuf(stdout,0);   //For Debug Purposes
 
     //Loops through and accepts connections iteratively
     run();
 
-	//Cleanup
-	disengage();
+    //Cleanup
+    disengage();
 
-	return 0;
+    return 0;
 }
