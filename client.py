@@ -10,7 +10,7 @@ NET_ORDER = "big"
 
 class TicTacToe(object):
 	"""interact with Stanford ZERO fun/vulnerable tic tac toe server"""
-	GET_VERSION_PKT = b"\x00"
+	GET_VERSION_PKT = b"\x00"*4
 	def __init__(self, connect_tuple, debug = True):
 		super(TicTacToe, self).__init__()
 		self.connect_tuple = connect_tuple
