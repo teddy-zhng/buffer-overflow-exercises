@@ -8,6 +8,35 @@
 #define BUFFER_SIZE 1024
 #define on_error(...) { fprintf(stderr, __VA_ARGS__); fflush(stderr); exit(1); }
 
+// todo: assert pkt_type/int is of len 4
+
+void handle_client(int client_fd) {
+  int pkt_type;
+  int bytes_read;
+
+  while (1) {
+    bytes_read = recv(client_fd, buf, 4, 0);
+
+    if (bytes_read != 4) {
+      on_error("didn't read enough bytes for type :(");
+    }
+
+    switch(pkt_type) {
+    case 0:
+      // handle pkt type 0
+      printf("stub code will handle pkt type 0\n");
+      break;
+    case 1:
+      printf("stub code will handle pkt type 1\n");
+      break;
+
+    default:
+      printf("stub code will handle unknown pkt type 1\n");
+      break;    
+    }
+  }
+}
+
 int main (int argc, char *argv[]) {
   if (argc < 2) on_error("Usage: %s [port]\n", argv[0]);
 
@@ -41,15 +70,17 @@ int main (int argc, char *argv[]) {
 
     if (client_fd < 0) on_error("Could not establish new connection\n");
 
-    while (1) {
-      int read = recv(client_fd, buf, BUFFER_SIZE, 0);
+    handle_client(client_fd);
 
-      if (!read) break; // done reading
-      if (read < 0) on_error("Client read failed\n");
+    // while (1) {
+    //   int read = recv(client_fd, buf, BUFFER_SIZE, 0);
 
-      err = send(client_fd, buf, read, 0);
-      if (err < 0) on_error("Client write failed\n");
-    }
+    //   if (!read) break; // done reading
+    //   if (read < 0) on_error("Client read failed\n");
+
+    //   err = send(client_fd, buf, read, 0);
+    //   if (err < 0) on_error("Client write failed\n");
+    // }
   }
 
   return 0;
