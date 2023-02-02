@@ -7,9 +7,9 @@ server stuff:
 `game_dispatcher.c`
 `helper.c`
 
-`client.py` client code
+client code `client.py` 
 
-`account_login.c` code for logging in 
+code for logging in `account_login.c` 
 
 gameplay 
 `tictactoe`
