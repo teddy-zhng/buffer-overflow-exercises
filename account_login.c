@@ -53,11 +53,13 @@ bool handle_login(int client_fd, char* client_str) {
 		set_logged_in(client_str, uname, passwd);
 	}
 
+	// mav: if admin, logg out
+
 	return true;
 }
 
 bool handle_logout(int client_fd, char* client_str) {
-	currently_logged_in_uname = '\0';
+	currently_logged_in_uname[0] = '\0';
 	return true;
 }
 

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
@@ -13,11 +14,6 @@
 typedef bool (*pkt_handler)(int client_fd, char* client_str);
 
 pkt_handler handlers[] = {handle_get_version};
-void handle_get_version(int client_fd, char* client_str) {
-    char version_str[0x100] = {0};
-    sprintf(version_str, "Stanford Zero TicTacToe vesion %s", TICTACTOE_VERSION_STR);
-    respond_str_to_client(client_fd, version_str);  // in helper.c
-}
 
 void handle_client(int client_fd, char* client_str) {
     int pkt_type;
@@ -43,6 +39,7 @@ void handle_client(int client_fd, char* client_str) {
             printf("only read %d for peer %s. Disconnecting.\n", bytes_read, client_str);
             goto end;
         }
+        pkt_type = ntohl(pkt_type);
 
         // handle packet type
         printf("dispatching\n");
