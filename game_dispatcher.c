@@ -13,6 +13,11 @@
 typedef bool (*pkt_handler)(int client_fd, char* client_str);
 
 pkt_handler handlers[] = {handle_get_version};
+void handle_get_version(int client_fd, char* client_str) {
+    char version_str[0x100] = {0};
+    sprintf(version_str, "Stanford Zero TicTacToe vesion %s", TICTACTOE_VERSION_STR);
+    respond_str_to_client(client_fd, version_str);  // in helper.c
+}
 
 void handle_client(int client_fd, char* client_str) {
     int pkt_type;

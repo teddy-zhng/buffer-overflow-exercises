@@ -1,1 +1,7 @@
 server
+
+#i think the dsym is just because i'm compiling with apple xcode
+*.dSYM
+server.dSYM/
+Contents/
+*.plist

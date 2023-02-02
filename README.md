@@ -2,13 +2,23 @@
 
 A tictactoe game with intentional buffer overflow vulnerabilities for Stanford ZERO team practice!
 
-`main_game_server.c` game drive
-`client.py` client 
+server stuff:
+`main_game_server.c`
+`game_dispatcher`
+`helper`
 
-`tictactoe.c, tictactoe.h` gameplay 
+client code `client.py` 
 
-`high_score.c, high_score.h` scores/game history
+code for logging in `account_login` 
 
+gameplay (intentional vulns are in these)
+`tictactoe`
+`high_score` 
+
+version stuff `globals`
+
+-----------------
+Welcome to our tic tac toe game! Please complete each level in ascending order, and try not to look at the code in a level you haven't gotten to yet!
 
 level 0:
 
