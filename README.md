@@ -7,7 +7,7 @@ A tictactoe game with intentional buffer overflow vulnerabilities for Stanford Z
 
 `game.c, game.h` gameplay 
 
-'high_score.c, high_score.h' scores/game history
+`high_score.c, high_score.h` scores/game history
 
 
 level 0:
