@@ -1,5 +1,10 @@
 import sys
 import socket
+import time
+import random
+
+names = ['Mav', 'Adam', 'Teddy', 'Ari', 'Donovan', 'Diana', 
+'Eduardo', 'Emanuel', 'Nourya', 'Ron', 'Tobias', 'Vrushank']
 
 def client_error_wrapper(error_msg):
 	print("*"*len(str(error_msg)))
@@ -47,12 +52,15 @@ class TicTacToe(object):
 		while len(user_coords) != 2:
 			input = ("You made me almost seg fault! Give me two coordinates!")
 
-		packet = turn + user_coords[0] + user_coords[1]
-		self.server_conn.send(packet) #send which player, and coordinates
+		turn_enum = 1
+		if turn == 'O':
+			turn_enum = 2
+		packet = turn.encode("utf-8") + user_coords[0].encode("utf-8") + user_coords[1].encode("utf-8")
+		self.server_conn.sendall(packet) #send which player, and coordinates
 
 	#expects a response that is a 9 byte string representing the board
 	def read_board(self):
-		response = self.read_response(self)
+		response = self.read_response()
 
 		#print the board
 		print('     0     1     2')
@@ -64,10 +72,8 @@ class TicTacToe(object):
 		
 	#expects 4 bytes repr. winner, 0 = no one, 1 = X, 2 = O
 	def get_winner(self):
-		response = self.read_response(self)
-		return int.from_bytes(response) == 0
-
-        
+		response = self.read_response()
+		return int.from_bytes(response, NET_ORDER)
 
 def play(connect_tuple):
 	game = TicTacToe(connect_tuple)
@@ -75,6 +81,23 @@ def play(connect_tuple):
 	game.connect()
 	print("connected")
 	print(game.get_version())
+
+	print("WELCOME TO ZERO TICTACTOE. 100% VULNERABILITY-FREE CODE GUARANTEED")
+	game.read_board()
+
+	#gameplay
+	turn = 'X'
+	while game.get_winner == 0:
+		print('Player %s\'s')
+		game.place(game, turn)
+		print('Good move. I think...')
+		time.sleep(1)
+		game.read_board()
+		turn = turn == 'X' if turn == 'Y' else 'Y'
+
+	#game ended
+	name = names[random(0, len(names))] # fingers crossed
+	print('CONGRATS %s YOU WIN!', name) 
 
 
 def main():
