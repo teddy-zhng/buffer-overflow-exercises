@@ -11,11 +11,11 @@ client code `client.py`
 
 code for logging in `account_login` 
 
-gameplay 
+gameplay (intentional vulns are in these)
 `tictactoe`
 `high_score` 
 
-version stuff `globals`
+version stuff (ignore) `globals`
 
 -----------------
 Welcome to our tic tac toe game! Please complete each level in ascending order, and try not to look at the code in a level you haven't gotten to yet!
