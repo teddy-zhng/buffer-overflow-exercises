@@ -31,7 +31,7 @@ How to:
 
 First, run `$ git clone <repo link>` 
 
-Then run `$ make inside the directory`
+Then run `$ make` inside the directory
 
 Run the server with `$ ./server`, and it will print the port it's running on
 
