@@ -6,6 +6,23 @@ import random
 names = ['Mav', 'Adam', 'Teddy', 'Ari', 'Donovan', 'Diana', 
 'Eduardo', 'Emanuel', 'Nourya', 'Ron', 'Tobias', 'Vrushank']
 
+handlers = {
+	"handle_get_version":0,
+	"handle_get_currently_logged_in_uname":1,
+	"handle_login":2,
+	"handle_login_admin":3,
+	"handle_logout":4,
+	"handle_create_user":5,
+	"handle_admin_run_cmd":6,
+	"handle_place":7, 
+	"handle_read_board":8,
+	"handle_get_winner":9,
+	"handle_add_winner":10,
+	"handle_set_intro":11,
+	"handle_set_outro":12,
+	"handle_report_winners":13,
+}
+
 def client_error_wrapper(error_msg):
 	print("*"*len(str(error_msg)))
 	print(error_msg)
@@ -24,9 +41,12 @@ class TicTacToe(object):
 
 	def read_response(self):
 		resp_len = self.server_conn.recv(4)
-		if len(resp_len) != 4:
+		if len(resp_len) < 4:
 			client_error_wrapper("unable to read resposne length")
-			raise Exception("need at least 4 bytes in resposne")
+			raise Exception("need 4 bytes in length resposne, you have " + str(len(resp_len)))
+		elif len(resp_len) > 4:
+			client_error_wrapper("unable to read resposne length")
+			raise Exception("need 4 bytes in length resposne, you have " + str(len(resp_len)))
 		resp_len = int.from_bytes(resp_len, NET_ORDER)
 		if self.debug:
 			print("getting msg resposne len:", resp_len)
@@ -55,11 +75,13 @@ class TicTacToe(object):
 		turn_enum = 1
 		if turn == 'O':
 			turn_enum = 2
-		packet = turn.encode("utf-8") + user_coords[0].encode("utf-8") + user_coords[1].encode("utf-8")
+		packet = int.to_bytes(turn_enum, 4, NET_ORDER) + user_coords[0].encode("utf-8") + user_coords[1].encode("utf-8")
+		self.server_conn.sendall(int.to_bytes(handlers["handle_get_winner"], 4, NET_ORDER))
 		self.server_conn.sendall(packet) #send which player, and coordinates
 
 	#expects a response that is a 9 byte string representing the board
 	def read_board(self):
+		self.server_conn.sendall(int.to_bytes(handlers["handle_get_winner"], 4, NET_ORDER))
 		response = self.read_response()
 
 		#print the board
@@ -72,6 +94,7 @@ class TicTacToe(object):
 		
 	#expects 4 bytes repr. winner, 0 = no one, 1 = X, 2 = O
 	def get_winner(self):
+		self.server_conn.sendall(int.to_bytes(handlers["handle_get_winner"], 4, NET_ORDER))
 		response = self.read_response()
 		return int.from_bytes(response, NET_ORDER)
 
@@ -85,6 +108,7 @@ def play(connect_tuple):
 	print("WELCOME TO ZERO TICTACTOE. 100% VULNERABILITY-FREE CODE GUARANTEED")
 	game.read_board()
 
+	time.sleep(1)
 	#gameplay
 	turn = 'X'
 	while game.get_winner == 0:
