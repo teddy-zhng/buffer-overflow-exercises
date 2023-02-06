@@ -8,6 +8,7 @@
 
 #include "tictactoe.h"
 #include "high_score.h"
+#include "helper.h"
 
 //TODO make sure each game has their own board, client_fd etc
 //this is just a visualization of what it'd look like for each player
@@ -56,7 +57,6 @@ bool handle_read_board(int client_fd, char* client_str) {
 
 
 
-
 bool handle_get_winner(int client_fd) {
     //implement a more effecient check if needed 
 
@@ -80,7 +80,7 @@ bool handle_get_winner(int client_fd) {
 
     //send winner to db stub code
     add_winner(client_fd, winner);
-    
+
     return 0;//what to return for status?
 
 }
