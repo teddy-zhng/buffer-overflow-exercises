@@ -18,7 +18,13 @@ gameplay (intentional vulns are in these)
 version stuff (ignore) `globals`
 
 -----------------
-Welcome to our tic tac toe game! Please complete each level in ascending order, and try not to look at the code in a level you haven't gotten to yet!
+Welcome to our tic tac toe game! Find and exploit the vulnerabilities, have fun! 
 
 Hints:
 - 
+
+
+-----------------
+How to:
+Run the server with `$ ./server`, and it will print the port it's running on
+Run the client in a different shell with `$ python3 client.py localhost <port>`
