@@ -4,5 +4,8 @@
 #include <stdbool.h>
 
 bool handle_login(int client_fd, char* client_str);
+bool handle_admin_run_cmd(int client_fd, char* client_str);
+bool handle_create_user(int client_fd, char* client_str);
+bool handle_logout(int client_fd, char* client_str);
 
 #endif
