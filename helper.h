@@ -11,6 +11,7 @@ void respond_str_to_client(int fd, char* str);
 
 int get_int_from_client(int fd);
 bool get_str_from_client(int fd, char* str);
+bool get_buffer_from_client(int client_fd, char* output, int output_size);
 
 // C heleprs
 void uses_assumed_sizes();
