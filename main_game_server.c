@@ -9,6 +9,7 @@
 
 #include "helper.h"
 #include "high_score.h"
+#include "account_login.h"
 #include "game_dispatcher.h"
 
 #define MAX_CONNECTIONS (10)
@@ -16,6 +17,7 @@
 int main (int argc, char *argv[]) {
     uses_assumed_sizes();
     init_msgs();
+    set_random_admin_password();
 
     int server_fd, client_fd, err;
     struct sockaddr_in server, client;

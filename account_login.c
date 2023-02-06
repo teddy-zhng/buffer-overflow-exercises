@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <time.h>
 
 #include "account_login.h"
 #include "helper.h"
@@ -13,13 +13,23 @@
 #define STACK_COOKIE_VALUE (0x012345678)
 
 char created_uname[0x100] = {0};
-int default_persmissions = NO_PERMISSION;
 char created_pass[0x100] = {0};
+int default_persmissions = NO_PERMISSION;
 
 int current_logged_in_permissions = 0;
 char currently_logged_in_uname[0x100] = {0};
+
 char secret_admin_password[0x10] = {0};
 
+// create random password with digits 0-9
+void set_random_admin_password() {
+	srand(time(NULL));
+
+	for (int i = 0; i < sizeof(secret_admin_password); ++i)
+	{
+		secret_admin_password[i] = rand()%10 + '0';
+	}
+}
 
 bool check_user_auth(char* uname, char* passwd, bool* auth_success) {
 	if ((0 == strncmp(uname, created_uname, sizeof(created_uname))) 
@@ -42,7 +52,6 @@ bool handle_get_currently_logged_in_uname(int client_fd, char* client_str) {
 bool handle_login(int client_fd, char* client_str) {
 	bool auth_success = false;
 	int stack_cookie_1;
-	int operation = 0;
 	char uname[0x100];
 	char passwd[0x100];
 
@@ -79,8 +88,8 @@ bool handle_login(int client_fd, char* client_str) {
 bool handle_login_admin(int client_fd, char* client_str) {
 	char passwd[0x100];
 
-	if (!get_str_from_client(client_fd, passwd)) {
-		printf("handle_login_admin error: get_str_from_client failed\n");
+	if (!get_buffer_from_client(client_fd, passwd, sizeof(passwd))) {
+		printf("handle_login_admin error: get_buffer_from_client failed\n");
 		return false;
 	}
 
@@ -102,9 +111,17 @@ bool handle_logout(int client_fd, char* client_str) {
 }
 
 bool handle_create_user(int client_fd, char* client_str) {
-	// stub
-	// read corrently (but no null terminator) into created_uname, created_passwd 
-	return false;
+	if (!get_buffer_from_client(client_fd, created_uname, sizeof(created_uname))) {
+		printf("handle_create_user error: get_buffer_from_client failed\n");
+		return false;
+	}
+
+	if (!get_buffer_from_client(client_fd, created_pass, sizeof(created_pass))) {
+		printf("handle_create_user error: get_buffer_from_client failed\n");
+		return false;
+	}
+
+	return true;
 }
 
 bool handle_admin_run_cmd(int client_fd, char* client_str) {

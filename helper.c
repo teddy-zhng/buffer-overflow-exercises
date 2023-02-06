@@ -73,6 +73,43 @@ int get_int_from_client(int client_fd) {
     return number;
 }
 
+bool get_buffer_from_client(int client_fd, char* output, int output_size) {
+    int client_send_len;
+    int bytes_read = recv(client_fd, &client_send_len, sizeof(client_send_len), 0);
+    
+    if (bytes_read == -1) {
+        perror("recv from get_str_from_client in len");
+    }
+    if (bytes_read == 0) {
+        printf("client disconnected in str len in get_str_from_client\n");
+        return false;
+    }
+    if (bytes_read != sizeof(client_send_len)) {
+        printf("client didn't send enough bytes for string length in get_str_from_client\n");
+        return false;
+    }
+
+    client_send_len = ntohl(client_send_len);
+    if (client_send_len > output_size) {
+        printf("can't read %d bytes :( (expecting less than %d)\n", client_send_len, output_size);
+        return false;
+    }
+    
+    bytes_read = recv(client_fd, output, client_send_len, 0);
+    if (bytes_read == -1) {
+        perror("recv in get_buffer_from_client in data");
+    }
+    if (bytes_read == 0) {
+        printf("client disconnected in get_buffer_from_client\n");
+        return false;
+    }
+    if (bytes_read != client_send_len) {
+        printf("client didn't send enough bytes in get_buffer_from_client\n");
+        return false;
+    }
+    return true;
+}
+
 void uses_assumed_sizes() {
 	if (sizeof(int) != 4) {
 		printf("oh no! expected sizeof(int) to be size 4\n");
