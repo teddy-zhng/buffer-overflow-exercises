@@ -76,7 +76,7 @@ class TicTacToe(object):
 		if turn == 'O':
 			turn_enum = 2
 		packet = int.to_bytes(turn_enum, 4, NET_ORDER) + user_coords[0].encode("utf-8") + user_coords[1].encode("utf-8")
-		self.server_conn.sendall(int.to_bytes(handlers["handle_get_winner"], 4, NET_ORDER))
+		self.server_conn.sendall(int.to_bytes(7, 4, NET_ORDER))
 		self.server_conn.sendall(packet) #send which player, and coordinates
 
 	#expects a response that is a 9 byte string representing the board
@@ -88,14 +88,14 @@ class TicTacToe(object):
 		#print the board //TODO convert ascii code from stuff
 		print('     0     1     2')
 		print(f'0    {response[0]}  |  {response[1]}  |  {response[2]}')
-		print('     ----------------')
+		print('      --------------')
 		print(f'1    {response[3]}  |  {response[4]}  |  {response[5]}')
-		print('     ----------------')
+		print('      --------------')
 		print(f'2    {response[6]}  |  {response[7]}  |  {response[8]}')
 		
 	#expects 4 bytes repr. winner, 0 = no one, 1 = X, 2 = O
 	def get_winner(self):
-		self.server_conn.sendall(int.to_bytes(handlers["handle_get_winner"], 4, NET_ORDER))
+		self.server_conn.sendall(int.to_bytes(9, 4, NET_ORDER))
 		response = self.read_response()
 		return int.from_bytes(response, NET_ORDER)
 
@@ -112,7 +112,7 @@ def play(connect_tuple):
 	time.sleep(1)
 	#gameplay
 	turn = 'X'
-	while game.get_winner == 0:
+	while game.get_winner() == 0:
 		print('Player %s\'s')
 		game.place(game, turn)
 		print('Good move. I think...')
@@ -121,8 +121,8 @@ def play(connect_tuple):
 		turn = turn == 'X' if turn == 'Y' else 'Y'
 
 	#game ended
-	name = names[random(0, len(names))] # fingers crossed
-	print('CONGRATS %s YOU WIN!', name) 
+	name = random.choice(names) # fingers crossed
+	print('CONGRATS %s YOU WIN!' % name) 
 
 
 def main():

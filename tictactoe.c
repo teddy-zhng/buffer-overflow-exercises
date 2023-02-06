@@ -66,26 +66,31 @@ bool handle_read_board(int client_fd, char* client_str) {
 bool handle_get_winner(int client_fd, char* client_str) {
     //implement a more effecient check if needed 
 
+		printf("entered get winner\n");
+
     enum Player winner = E;
-    
-    for (int i = 0; i < __BOARD_SIZE__; i++) {
+
+    for (int i = 0; i < 3; i++) {
         //check vertical lines
         if ((board[i][0] != E) && (board[i][0] == board[i][1]) && (board[i][0] == board[i][2]))
             winner = board[i][0];
-
         // check horizontal lines
         if ((board[0][i] != E) && (board[0][i] == board[1][i]) && (board[0][i] == board[2][i]))
             winner = board[0][i];
     }
+	printf("sdfadafa\n");
+
     // check diagonals
     if ((board[0][0] != E) && (board[0][0] == board[1][1]) && (board[0][0] == board[2][2]))
         winner = board[0][0];
+printf("sdfadafa\n");
 
     if ((board[2][0] != E) && (board[2][0] == board[1][1]) && (board[0][0] == board[0][2]))
         winner = board[2][0];
 
     //send winner to client
-    respond_str_to_client(client_fd, (char*)winner);
+	
+    respond_buff_to_client(client_fd, winner, sizeof(E));
 
     return true;//what to return for status?
 
