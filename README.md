@@ -26,5 +26,7 @@ Hints:
 
 -----------------
 How to:
+
 Run the server with `$ ./server`, and it will print the port it's running on
+
 Run the client in a different shell with `$ python3 client.py localhost <port>`
