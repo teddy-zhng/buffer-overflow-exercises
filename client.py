@@ -62,9 +62,10 @@ class TicTacToe(object):
 		print('     ----------------')
 		print('2    %s  |  %s  |  %s', response[7], response[8], response[9])
 		
-	#expects 4 bytes repr. winner
+	#expects 4 bytes repr. winner, 0 = no one, 1 = X, 2 = O
 	def get_winner(self):
 		response = self.read_response(self)
+		return int.from_bytes(response) == 0
 
         
 

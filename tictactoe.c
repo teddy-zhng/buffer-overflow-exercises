@@ -50,7 +50,7 @@ bool handle_read_board(int client_fd, char* client_str) {
     int i = 0;
     for (int x = 0; x < __BOARD_SIZE__; x++) {
         for (int y = 0; y < __BOARD_SIZE__; y++) {
-			char player = 'X' ? board[x][y] == X : 'Y' ? board_pkt[x][y] == Y : 'E';
+			char player = 'X' ? board[x][y] == X : 'O' ? board[x][y] == O : 'E';
             board_pkt[i] = player;
             i++;
         }
