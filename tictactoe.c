@@ -72,7 +72,7 @@ bool handle_get_winner(int client_fd) {
         winner = board[2][0];
 
     //send winner to db stub code
-    add_winner(client_fd, winner);
+    //add_winner(client_fd, winner);
     
     return 0;//what to return for status?
 
