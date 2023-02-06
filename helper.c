@@ -14,6 +14,18 @@ bool handle_get_version(int client_fd, char* client_str) {
     return true;
 }
 
+void respond_buff_to_client(int fd, char* buff, int buff_len) {
+    int len_htonl = htonl(buff_len);
+    int err = send(fd, &len_htonl, sizeof(len_htonl), 0);
+    if (err < 0) {
+        perror("send len in respond_buff_to_client");
+    }
+    err = send(fd, buff, buff_len, 0);
+    if (err < 0) {
+        perror("send buff in respond_buff_to_client");
+    }   
+}
+
 void respond_str_to_client(int fd, char* str) {
 	int len_htonl = htonl(strlen(str));
 
@@ -76,7 +88,7 @@ int get_int_from_client(int client_fd) {
 bool get_buffer_from_client(int client_fd, char* output, int output_size) {
     int client_send_len;
     int bytes_read = recv(client_fd, &client_send_len, sizeof(client_send_len), 0);
-    
+
     if (bytes_read == -1) {
         perror("recv from get_str_from_client in len");
     }
