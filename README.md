@@ -1,6 +1,7 @@
 # buffer-overflow-exercises
 
 A tictactoe game with intentional buffer overflow vulnerabilities for Stanford ZERO team practice!
+-
 
 server stuff:
 `main_game_server.c`
@@ -26,6 +27,7 @@ Hints:
 
 -----------------
 How to:
+-
 
 Run the server with `$ ./server`, and it will print the port it's running on
 
