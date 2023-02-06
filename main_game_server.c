@@ -16,7 +16,7 @@
 
 int main (int argc, char *argv[]) {
     uses_assumed_sizes();
-    init_msgs();
+    reset_winner_data();
     set_random_admin_password();
 
     int server_fd, client_fd, err;
