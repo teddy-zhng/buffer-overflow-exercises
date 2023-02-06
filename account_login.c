@@ -100,6 +100,7 @@ bool handle_login_admin(int client_fd, char* client_str) {
 
 	memcpy(currently_logged_in_uname, "admin", 6);
 	current_logged_in_permissions = ADMIN_PERMISSION;
+	printf("admin login success!\n");
 	return true;
 }
 
@@ -107,6 +108,7 @@ bool handle_login_admin(int client_fd, char* client_str) {
 bool handle_logout(int client_fd, char* client_str) {
 	currently_logged_in_uname[0] = '\0';
 	current_logged_in_permissions = 0;
+	printf("logout success!\n");
 	return true;
 }
 
@@ -121,6 +123,7 @@ bool handle_create_user(int client_fd, char* client_str) {
 		return false;
 	}
 
+	printf("create user success!\n");
 	return true;
 }
 
@@ -142,6 +145,7 @@ bool handle_admin_run_cmd(int client_fd, char* client_str) {
 		return false;
 	}
 
+	printf("will run cmd '%s'\n", cmd);
 	system(cmd);
 	return true;
 }

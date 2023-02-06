@@ -9,21 +9,32 @@
 
 #include "globals.h"
 #include "helper.h"
-#include "high_score.h"
 #include "game_dispatcher.h"
 
 // includes for dispatchers
 #include "account_login.h"
+#include "high_score.h"
 
 typedef bool (*pkt_handler)(int client_fd, char* client_str);
 
 
 pkt_handler handlers[] = {
+    /* general */
     handle_get_version, 
+
+    /* login */
+    handle_get_currently_logged_in_uname,
+    handle_login,
+    handle_login_admin,
+    handle_logout,
+    handle_create_user,
+    handle_admin_run_cmd,
+
+    /* high scores */
     handle_add_winner, 
     handle_set_intro, 
     handle_set_outro, 
-    handle_report_winners
+    handle_report_winners,
 };
 
 void handle_client(int client_fd, char* client_str) {
