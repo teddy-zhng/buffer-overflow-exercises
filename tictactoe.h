@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 enum Player {
-    E, X, O //E is empty and happens to be null too, 0, 1, 2 default values
+    E, X, O //E means empty and happens to be null too, 0, 1, 2 default values
 };
 
 bool handle_place(int client_fd, char* client_str);
@@ -13,5 +13,7 @@ bool handle_place(int client_fd, char* client_str);
 bool handle_read_board(int client_fd, char* client_str);
 
 bool handle_get_winner(int client_fd, char* client_str);
+
+void reset_board();
 
 #endif

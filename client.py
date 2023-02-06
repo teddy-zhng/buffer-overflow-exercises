@@ -42,14 +42,14 @@ class TicTacToe(object):
 	def read_response(self):
 		resp_len = self.server_conn.recv(4)
 		if len(resp_len) < 4:
-			client_error_wrapper("unable to read resposne length")
-			raise Exception("need 4 bytes in length resposne, you have " + str(len(resp_len)))
+			client_error_wrapper("unable to read response length")
+			raise Exception("need 4 bytes in length response, you have " + str(len(resp_len)))
 		elif len(resp_len) > 4:
-			client_error_wrapper("unable to read resposne length")
-			raise Exception("need 4 bytes in length resposne, you have " + str(len(resp_len)))
+			client_error_wrapper("unable to read response length")
+			raise Exception("need 4 bytes in length response, you have " + str(len(resp_len)))
 		resp_len = int.from_bytes(resp_len, NET_ORDER)
 		if self.debug:
-			print("getting msg resposne len:", resp_len)
+			print("getting msg response len:", resp_len)
 
 		resp_data = self.server_conn.recv(resp_len)
 		return resp_data
@@ -68,30 +68,36 @@ class TicTacToe(object):
 
     #caller guarantees turn is a single char, X or O
 	def place(self, turn):
-		user_coords = input("Please enter the coordinates you want to mark, eg: 0 0").split()
+		user_coords = input("Please enter the coordinates you want to mark in x-y order, eg: 0 0\n>").split(' ')
 		while len(user_coords) != 2:
-			input = ("You made me almost seg fault! Give me two coordinates!")
+			user_coords = input("Watch it! you made me almost seg fault! Give me two coordinates!").split(' ')
 
 		turn_enum = 1
 		if turn == 'O':
 			turn_enum = 2
-		packet = int.to_bytes(turn_enum, 4, NET_ORDER) + user_coords[0].encode("utf-8") + user_coords[1].encode("utf-8")
+
+		packet = int.to_bytes(turn_enum, 4, NET_ORDER) + int.to_bytes(int(user_coords[0]), 4, NET_ORDER) + int.to_bytes(int(user_coords[1]), 4, NET_ORDER)
 		self.server_conn.sendall(int.to_bytes(7, 4, NET_ORDER))
 		self.server_conn.sendall(packet) #send which player, and coordinates
+
 
 	#expects a response that is a 9 byte string representing the board
 	def read_board(self):
 		self.server_conn.sendall(int.to_bytes(8, 4, NET_ORDER))
 		response = self.read_response()
-		print(response)
 
 		#print the board //TODO convert ascii code from stuff
-		print('     0     1     2')
-		print(f'0    {response[0]}  |  {response[1]}  |  {response[2]}')
-		print('      --------------')
-		print(f'1    {response[3]}  |  {response[4]}  |  {response[5]}')
-		print('      --------------')
-		print(f'2    {response[6]}  |  {response[7]}  |  {response[8]}')
+		print()
+		print()
+		print('       0       1       2')
+		print()
+		print(f'0      {chr(response[0])}   |   {chr(response[1])}   |   {chr(response[2])}')
+		print('        ---------------')
+		print(f'1      {chr(response[3])}   |   {chr(response[4])}   |   {chr(response[5])}')
+		print('        ---------------')
+		print(f'2      {chr(response[6])}   |   {chr(response[7])}   |   {chr(response[8])}')
+		print()
+		print()
 		
 	#expects 4 bytes repr. winner, 0 = no one, 1 = X, 2 = O
 	def get_winner(self):
@@ -109,20 +115,20 @@ def play(connect_tuple):
 	print("WELCOME TO ZERO TICTACTOE. 100% VULNERABILITY-FREE CODE GUARANTEED")
 	game.read_board()
 
-	time.sleep(1)
 	#gameplay
 	turn = 'X'
 	while game.get_winner() == 0:
-		print('Player %s\'s')
-		game.place(game, turn)
+		print('Player %s\'s turn' % turn)
+		game.place(turn)
 		print('Good move. I think...')
-		time.sleep(1)
+		print('-'*20)
 		game.read_board()
-		turn = turn == 'X' if turn == 'Y' else 'Y'
+		turn = 'X' if turn == 'O' else 'O'
 
 	#game ended
 	name = random.choice(names) # fingers crossed
-	print('CONGRATS %s YOU WIN!' % name) 
+	print('Congrats %s, YOU WIN!' % name) 
+	print('hope I guessed that right :^)')
 
 
 def main():

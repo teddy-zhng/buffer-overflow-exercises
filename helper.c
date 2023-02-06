@@ -6,11 +6,17 @@
 
 #include "helper.h"
 #include "globals.h"
+#include "tictactoe.h"
 
 bool handle_get_version(int client_fd, char* client_str) {
     char version_str[0x100] = {0};
     sprintf(version_str, "Stanford Zero TicTacToe vesion %s", TICTACTOE_VERSION_STR);
     respond_str_to_client(client_fd, version_str);
+
+	//reset the board here in case a previous game was cut off before winning
+
+	reset_board();
+
     return true;
 }
 
