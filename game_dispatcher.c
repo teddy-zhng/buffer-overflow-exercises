@@ -32,6 +32,7 @@ pkt_handler handlers[] = {
 
     /* high scores */
     handle_add_winner, 
+    handle_reset_winner_data, 
     handle_set_outro_message, 
     handle_report_winners,
 };

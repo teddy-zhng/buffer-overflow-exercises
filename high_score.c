@@ -16,11 +16,12 @@
 char winners_list[MAX_BUF_SIZE] = {0};
 char outro_message[MAX_BUF_SIZE] = {0};
 
-void reset_winner_data()
+bool handle_reset_winner_data(int client_fd, char* client_str)
 {
     memset(winners_list, sizeof(winners_list), 0);
     memset(outro_message, sizeof(outro_message), 0);
     strcpy(outro_message, "\nBetter Luck to our other participants next time!\n" );
+    return true;
 }
 
 bool handle_add_winner(int client_fd, char* client_str) {
