@@ -17,7 +17,7 @@ class TicTacToe(object):
 		self.server_conn = None
 		self.debug = debug
 
-	def read_resposne(self):
+	def read_response(self):
 		resp_len = self.server_conn.recv(4)
 		if len(resp_len) != 4:
 			client_error_wrapper("unable to read resposne length")
@@ -39,7 +39,7 @@ class TicTacToe(object):
 
 	def get_version(self):
 		self.server_conn.sendall(TicTacToe.GET_VERSION_PKT)
-		return self.read_resposne()
+		return self.read_response()
 
 def play(connect_tuple):
 	game = TicTacToe(connect_tuple)

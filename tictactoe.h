@@ -12,6 +12,6 @@ bool handle_place(int client_fd, char* client_str);
 
 bool handle_read_board(int client_fd, char* client_str);
 
-bool handle_get_winner(int client_fd);
+bool handle_get_winner(int client_fd, char* client_str);
 
 #endif

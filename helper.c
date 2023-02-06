@@ -52,6 +52,27 @@ bool get_str_from_client(int client_fd, char* str) {
     return true;
 }
 
+int get_int_from_client(int client_fd) {
+    int number;
+    int bytes_read = recv(client_fd, &number, sizeof(int), 0);
+    if (bytes_read == -1) {
+        perror("recv from get_int_from_client in len");
+    }
+    if (bytes_read == 0) {
+        printf("client disconnected in number in get_int_from_client\n");
+        return -1;
+    }
+    if (bytes_read != sizeof(int)) {
+    	printf("client didn't send exactly 4 bytes for int length in get_int_from_client\n");
+    	return -1;
+    }
+
+    number = ntohl(number);
+    log_verbose("will read number %d\n", number);
+
+    return number;
+}
+
 void uses_assumed_sizes() {
 	if (sizeof(int) != 4) {
 		printf("oh no! expected sizeof(int) to be size 4\n");
