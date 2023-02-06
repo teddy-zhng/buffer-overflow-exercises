@@ -4,13 +4,8 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-// #include "tictactoe.h"
 #include "high_score.h"
 #include "helper.h"
-
-//void add_winner(int client_fd, enum Player winner) {
-//    //TODO
-//}
 
 #define MAX_BUF_SIZE (0x100)
 char winners_list[MAX_BUF_SIZE] = {0};
