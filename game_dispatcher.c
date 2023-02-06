@@ -37,9 +37,10 @@ pkt_handler handlers[] = {
 
     /* high scores */
     handle_add_winner, 
-    handle_set_intro, 
-    handle_set_outro, 
-    handle_report_winners
+
+    handle_reset_winner_data, 
+    handle_set_outro_message, 
+    handle_report_winners,
 };
 
 void handle_client(int client_fd, char* client_str) {
