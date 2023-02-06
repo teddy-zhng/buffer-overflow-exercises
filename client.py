@@ -41,13 +41,40 @@ class TicTacToe(object):
 		self.server_conn.sendall(TicTacToe.GET_VERSION_PKT)
 		return self.read_response()
 
+    #caller guarantees turn is a single char, X or O
+	def place(self, turn):
+		user_coords = input("Please enter the coordinates you want to mark, eg: 0 0").split()
+		while len(user_coords) != 2:
+			input = ("You made me almost seg fault! Give me two coordinates!")
+
+		packet = turn + user_coords[0] + user_coords[1]
+		self.server_conn.send(packet) #send which player, and coordinates
+
+	#expects a response that is a 9 byte string representing the board
+	def read_board(self):
+		response = self.read_response(self)
+
+		#print the board
+		print('     0     1     2')
+		print('0    %s  |  %s  |  %s', response[0], response[1], response[2])
+		print('     ----------------')
+		print('1    %s  |  %s  |  %s', response[4], response[5], response[6])
+		print('     ----------------')
+		print('2    %s  |  %s  |  %s', response[7], response[8], response[9])
+		
+	#expects 4 bytes repr. winner, 0 = no one, 1 = X, 2 = O
+	def get_winner(self):
+		response = self.read_response(self)
+		return int.from_bytes(response) == 0
+
+        
+
 def play(connect_tuple):
 	game = TicTacToe(connect_tuple)
 	print("connecting")
 	game.connect()
 	print("connected")
 	print(game.get_version())
-
 
 
 def main():
