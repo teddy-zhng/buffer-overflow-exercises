@@ -19,6 +19,7 @@ enum Player board[__BOARD_SIZE__][__BOARD_SIZE__] = { //(0, 0) top left, (2, 2) 
     {E, E, E} 
 };
 
+//expects 3 * 4 bytes = 12
 bool handle_place(int client_fd, char* client_str) {
     enum Player player; //first four bytes of packet are the player
     while ( (player = get_int_from_client(client_fd)) == -1) { }
@@ -43,13 +44,14 @@ bool handle_place(int client_fd, char* client_str) {
 //     return 0;
 // }
 
-// sends the board as a 36-byte (9 ints) char*
+// sends the board as a 9-byte char*
 bool handle_read_board(int client_fd, char* client_str) {
     char board_pkt[9];
     int i = 0;
     for (int x = 0; x < __BOARD_SIZE__; x++) {
         for (int y = 0; y < __BOARD_SIZE__; y++) {
-            board_pkt[i] = board[x][y];
+			char player = 'X' ? board[x][y] == X : 'Y' ? board_pkt[x][y] == Y : 'E';
+            board_pkt[i] = player;
             i++;
         }
     }
@@ -60,7 +62,7 @@ bool handle_read_board(int client_fd, char* client_str) {
 }
 
 
-
+//sends 4 bytes
 bool handle_get_winner(int client_fd, char* client_str) {
     //implement a more effecient check if needed 
 
