@@ -18,9 +18,9 @@ handlers = {
 	"handle_read_board":8,
 	"handle_get_winner":9,
 	"handle_add_winner":10,
-	"handle_set_intro":11,
-	"handle_set_outro":12,
-	"handle_report_winners":13,
+	"handle_reset_winner_data":11, 
+    "handle_set_outro_message":12, 
+    "handle_report_winners":13
 }
 
 def client_error_wrapper(error_msg):
@@ -81,16 +81,17 @@ class TicTacToe(object):
 
 	#expects a response that is a 9 byte string representing the board
 	def read_board(self):
-		self.server_conn.sendall(int.to_bytes(handlers["handle_get_winner"], 4, NET_ORDER))
+		self.server_conn.sendall(int.to_bytes(8, 4, NET_ORDER))
 		response = self.read_response()
+		print(response)
 
-		#print the board
+		#print the board //TODO convert ascii code from stuff
 		print('     0     1     2')
-		print('0    %s  |  %s  |  %s', response[0], response[1], response[2])
+		print(f'0    {response[0]}  |  {response[1]}  |  {response[2]}')
 		print('     ----------------')
-		print('1    %s  |  %s  |  %s', response[4], response[5], response[6])
+		print(f'1    {response[3]}  |  {response[4]}  |  {response[5]}')
 		print('     ----------------')
-		print('2    %s  |  %s  |  %s', response[7], response[8], response[9])
+		print(f'2    {response[6]}  |  {response[7]}  |  {response[8]}')
 		
 	#expects 4 bytes repr. winner, 0 = no one, 1 = X, 2 = O
 	def get_winner(self):

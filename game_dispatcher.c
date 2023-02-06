@@ -71,7 +71,7 @@ void handle_client(int client_fd, char* client_str) {
         pkt_type = ntohl(pkt_type);
 
         // handle packet type
-        printf("dispatching\n");
+        printf("dispatching %d\n", pkt_type);
         bool dispatch_status = handlers[pkt_type](client_fd, client_str);
         printf("dispatch_status: %d\n", dispatch_status);
     }

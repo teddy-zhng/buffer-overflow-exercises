@@ -46,11 +46,11 @@ bool handle_place(int client_fd, char* client_str) {
 
 // sends the board as a 9-byte char*
 bool handle_read_board(int client_fd, char* client_str) {
-    char board_pkt[9];
+    char board_pkt[10] = {0};
     int i = 0;
     for (int x = 0; x < __BOARD_SIZE__; x++) {
         for (int y = 0; y < __BOARD_SIZE__; y++) {
-			char player = 'X' ? board[x][y] == X : 'O' ? board[x][y] == O : 'E';
+			char player = board[x][y] == X ? 'X' : board[x][y] == O ? 'O': 'E';
             board_pkt[i] = player;
             i++;
         }
