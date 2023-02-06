@@ -7,31 +7,46 @@
 #include "account_login.h"
 #include "helper.h"
 
+#define ADMIN_PERMISSION (1)
+#define NO_PERMISSION (0)
+
+#define STACK_COOKIE_VALUE (0x012345678)
+
 char created_uname[0x100] = {0};
+int default_persmissions = NO_PERMISSION;
 char created_pass[0x100] = {0};
 
+int current_logged_in_permissions = 0;
 char currently_logged_in_uname[0x100] = {0};
+char secret_admin_password[0x10] = {0};
 
-bool check_auth(char* uname, char* passwd, bool* auth_success) {
-	// stub
-	return false;
+
+bool check_user_auth(char* uname, char* passwd, bool* auth_success) {
+	if ((0 == strncmp(uname, created_uname, sizeof(created_uname))) 
+		&& (0 == strncmp(passwd, created_pass, sizeof(created_pass)))) {
+		*auth_success = true;
+	}
+	return true;
 }
 
-void get_clientstr_login_details(char* conn_str, char** uname_out, char** passwd_out) {
-	// stub
+void set_login_details(char* conn_str, char* uname, char* passwd, int permissions) {
+	current_logged_in_permissions = permissions;
+	memcpy(currently_logged_in_uname, uname, sizeof(currently_logged_in_uname));
 }
 
-
-void set_logged_in(char* conn_str, char* uname, char* passwd) {
-	// stub
+bool handle_get_currently_logged_in_uname(int client_fd, char* client_str) {
+	respond_str_to_client(client_fd, currently_logged_in_uname);
+	return true;
 }
 
-
-// vuln: VERSION1 stackoverflow to overwrite auth_success
 bool handle_login(int client_fd, char* client_str) {
 	bool auth_success = false;
+	int stack_cookie_1;
+	int operation = 0;
 	char uname[0x100];
 	char passwd[0x100];
+
+	stack_cookie_1 = STACK_COOKIE_VALUE;
 
 	if (!get_str_from_client(client_fd, uname)) {
 		printf("handle_login error: get_str_from_client failed\n");
@@ -43,28 +58,52 @@ bool handle_login(int client_fd, char* client_str) {
 		return false;
 	}
 
-	if (!check_auth(uname, passwd, &auth_success)) {
-		printf("check_auth error\n");
+	if (!check_user_auth(uname, passwd, &auth_success)) {
+		printf("check_user_auth error\n");
 		return false;
 	}
 
 	if (auth_success) {
-		log_verbose("logging in %s as %s\n", client_str, uname);
-		set_logged_in(client_str, uname, passwd);
+		log_verbose("no perm logging in %s as %s\n", client_str, uname);
+		set_login_details(client_str, uname, passwd, default_persmissions);
 	}
 
-	// mav: if admin, logg out
-
+	if (STACK_COOKIE_VALUE != stack_cookie_1) {
+		printf("hacker tried to buffer overflow! :O exploding!\n");
+		handle_logout(client_fd, client_str);
+		return false;
+	}
 	return true;
 }
 
+bool handle_login_admin(int client_fd, char* client_str) {
+	char passwd[0x100];
+
+	if (!get_str_from_client(client_fd, passwd)) {
+		printf("handle_login_admin error: get_str_from_client failed\n");
+		return false;
+	}
+
+	if (0 != strcmp(passwd, secret_admin_password)) {
+		log_verbose("admin login attempted and failed! hacker or typo?!\n");
+		return false;
+	}
+
+	memcpy(currently_logged_in_uname, "admin", 6);
+	current_logged_in_permissions = ADMIN_PERMISSION;
+	return true;
+}
+
+
 bool handle_logout(int client_fd, char* client_str) {
 	currently_logged_in_uname[0] = '\0';
+	current_logged_in_permissions = 0;
 	return true;
 }
 
 bool handle_create_user(int client_fd, char* client_str) {
 	// stub
+	// read corrently (but no null terminator) into created_uname, created_passwd 
 	return false;
 }
 
@@ -72,6 +111,11 @@ bool handle_admin_run_cmd(int client_fd, char* client_str) {
 	/* let admin run any commands they want*/
 
 	if (0 !=strcmp(currently_logged_in_uname, "admin")) {
+		return false;
+	}
+
+	if (current_logged_in_permissions != ADMIN_PERMISSION) {
+		printf("hacker detected! and hacker averted ;)\n");
 		return false;
 	}
 
