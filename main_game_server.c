@@ -8,12 +8,14 @@
 #include <arpa/inet.h>
 
 #include "helper.h"
+#include "high_score.h"
 #include "game_dispatcher.h"
 
 #define MAX_CONNECTIONS (10)
 
 int main (int argc, char *argv[]) {
     uses_assumed_sizes();
+    init_msgs();
 
     int server_fd, client_fd, err;
     struct sockaddr_in server, client;

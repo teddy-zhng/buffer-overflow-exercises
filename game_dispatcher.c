@@ -9,11 +9,22 @@
 
 #include "globals.h"
 #include "helper.h"
+#include "high_score.h"
 #include "game_dispatcher.h"
+
+// includes for dispatchers
+#include "account_login.h"
 
 typedef bool (*pkt_handler)(int client_fd, char* client_str);
 
-pkt_handler handlers[] = {handle_get_version};
+
+pkt_handler handlers[] = {
+    handle_get_version, 
+    handle_add_winner, 
+    handle_set_intro, 
+    handle_set_outro, 
+    handle_report_winners
+};
 
 void handle_client(int client_fd, char* client_str) {
     int pkt_type;
@@ -43,7 +54,7 @@ void handle_client(int client_fd, char* client_str) {
 
         // handle packet type
         printf("dispatching\n");
-        bool dispatch_status = handlers[pkt_type](client_fd, client_str); // vuln: oob run any func lol
+        bool dispatch_status = handlers[pkt_type](client_fd, client_str);
         printf("dispatch_status: %d\n", dispatch_status);
     }
 end:
