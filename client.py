@@ -30,6 +30,9 @@ def client_error_wrapper(error_msg):
 
 NET_ORDER = "big"
 
+def pack_str_with_len(s):
+	return int.to_bytes(len(s), 4, NET_ORDER) + s.encode('utf-8')
+
 class TicTacToe(object):
 	"""interact with Stanford ZERO fun/vulnerable tic tac toe server"""
 	GET_VERSION_PKT = b"\x00"*4
@@ -105,12 +108,21 @@ class TicTacToe(object):
 		response = self.read_response()
 		return int.from_bytes(response, NET_ORDER)
 
+	def create_user(self):
+		self.server_conn.sendall(int.to_bytes(5, 4, NET_ORDER) + pack_str_with_len("user") + pack_str_with_len("pass"))
+		response = self.read_response()
+		return response
+
 def play(connect_tuple):
 	game = TicTacToe(connect_tuple)
 	print("connecting")
 	game.connect()
 	print("connected")
 	print(game.get_version())
+
+	# handle_create_user
+	print("create user return message:", game.create_user())
+	
 
 	print("WELCOME TO ZERO TICTACTOE. 100% VULNERABILITY-FREE CODE GUARANTEED")
 	game.read_board()
