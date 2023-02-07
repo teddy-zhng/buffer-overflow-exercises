@@ -36,3 +36,5 @@ Then run `$ make` inside the directory
 Run the server with `$ ./server`, and it will print the port it's running on
 
 Run the client in a different shell with `$ python3 client.py localhost <port>`
+
+Two people can share the same computer to play with each other. Or you can play by yourself :(
