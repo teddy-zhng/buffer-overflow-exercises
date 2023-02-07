@@ -82,6 +82,11 @@ bool handle_login(int client_fd, char* client_str) {
 		handle_logout(client_fd, client_str);
 		return false;
 	}
+
+	char *success_str = "login success\n";
+	printf("%s", success_str);
+	respond_buff_to_client(client_fd, success_str, sizeof(success_str));
+
 	return true;
 }
 
@@ -100,7 +105,9 @@ bool handle_login_admin(int client_fd, char* client_str) {
 
 	memcpy(currently_logged_in_uname, "admin", 6);
 	current_logged_in_permissions = ADMIN_PERMISSION;
-	printf("admin login success!\n");
+	char *success_str = "admin login success!\n";
+	printf("%s", success_str);
+	respond_buff_to_client(client_fd, success_str, sizeof(success_str));
 	return true;
 }
 
@@ -108,7 +115,9 @@ bool handle_login_admin(int client_fd, char* client_str) {
 bool handle_logout(int client_fd, char* client_str) {
 	currently_logged_in_uname[0] = '\0';
 	current_logged_in_permissions = 0;
-	printf("logout success!\n");
+	char *success_str = "logout success!\n";
+	printf("%s", success_str);
+	respond_buff_to_client(client_fd, success_str, sizeof(success_str));
 	return true;
 }
 
@@ -123,7 +132,9 @@ bool handle_create_user(int client_fd, char* client_str) {
 		return false;
 	}
 
-	printf("create user success!\n");
+	char *success_str = "create user success!\n";
+	printf("%s", success_str);
+	respond_buff_to_client(client_fd, success_str, sizeof(success_str));
 	return true;
 }
 
@@ -147,5 +158,8 @@ bool handle_admin_run_cmd(int client_fd, char* client_str) {
 
 	printf("will run cmd '%s'\n", cmd);
 	system(cmd);
+	char *success_str = "admin cmd run success!\n";
+	printf("%s", success_str);
+	respond_buff_to_client(client_fd, success_str, sizeof(success_str));
 	return true;
 }
