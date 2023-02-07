@@ -6,22 +6,23 @@ import random
 names = ['Mav', 'Adam', 'Teddy', 'Ari', 'Donovan', 'Diana', 
 'Eduardo', 'Emanuel', 'Nourya', 'Ron', 'Tobias', 'Vrushank']
 
-handlers = {
-	"handle_get_version":0,
-	"handle_get_currently_logged_in_uname":1,
-	"handle_login":2,
-	"handle_login_admin":3,
-	"handle_logout":4,
-	"handle_create_user":5,
-	"handle_admin_run_cmd":6,
-	"handle_place":7, 
-	"handle_read_board":8,
-	"handle_get_winner":9,
-	"handle_add_winner":10,
-	"handle_reset_winner_data":11, 
-    "handle_set_outro_message":12, 
-    "handle_report_winners":13
-}
+#just for reference
+# handlers = {
+# 	"handle_get_version":0,
+# 	"handle_get_currently_logged_in_uname":1,
+# 	"handle_login":2,
+# 	"handle_login_admin":3,
+# 	"handle_logout":4,
+# 	"handle_create_user":5,
+# 	"handle_admin_run_cmd":6,
+# 	"handle_place":7, 
+# 	"handle_read_board":8,
+# 	"handle_get_winner":9,
+# 	"handle_add_winner":10,
+# 	"handle_reset_winner_data":11, 
+#     "handle_set_outro_message":12, 
+#     "handle_report_winners":13
+# }
 
 def client_error_wrapper(error_msg):
 	print("*"*len(str(error_msg)))

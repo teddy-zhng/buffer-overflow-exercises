@@ -16,6 +16,10 @@ bool handle_reset_winner_data(int client_fd, char* client_str)
     memset(winners_list, 0, sizeof(winners_list));
     memset(outro_message, 0, sizeof(outro_message));
     strcpy(outro_message, "\nBetter Luck to our other participants next time!\n" );
+
+	char *success_str = "reset winner success\n";
+	printf("%s", success_str);
+	respond_str_to_client(client_fd, success_str);
     return true;
 }
 
@@ -26,7 +30,10 @@ bool handle_add_winner(int client_fd, char* client_str) {
         return false;
     }
     strncpy(winners_list, winner_name, sizeof(winners_list));
-    printf("handle_add_winner success!\n");
+
+	char *success_str = "handle_add_winner success!\n";
+	printf("%s", success_str);
+	respond_str_to_client(client_fd, success_str);
     return true;
 }
 
@@ -35,7 +42,9 @@ bool handle_set_outro_message(int client_fd, char* client_str) {
         printf("handle_set_outro_message error: get_buffer_from_client failed\n");
         return false;
     }
-    printf("handle_set_outro_message success!\n");
+	char *success_str = "handle_set_outro_message success!\n";
+	printf("%s", success_str);
+	respond_str_to_client(client_fd, success_str);
     return true;
 }
 
