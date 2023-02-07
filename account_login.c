@@ -10,7 +10,7 @@
 #define ADMIN_PERMISSION (1)
 #define NO_PERMISSION (0)
 
-#define STACK_COOKIE_VALUE (0x012345678)
+#define STACK_COOKIE_VALUE (0x01234567)
 
 char created_uname[0x100] = {0};
 char created_pass[0x100] = {0};
