@@ -16,6 +16,7 @@ char created_uname[0x100] = {0};
 char created_pass[0x100] = {0};
 int default_persmissions = NO_PERMISSION;
 
+bool enable_created_user_login = false;
 int current_logged_in_permissions = 0;
 char currently_logged_in_uname[0x100] = {0};
 
@@ -32,8 +33,11 @@ void set_random_admin_password() {
 }
 
 bool check_user_auth(char* uname, char* passwd, bool* auth_success) {
-	if ((0 == strncmp(uname, created_uname, sizeof(created_uname))) 
-		&& (0 == strncmp(passwd, created_pass, sizeof(created_pass)))) {
+	if ((enable_created_user_login)
+		&&
+		(0 == strncmp(uname, created_uname, sizeof(created_uname))) 
+		&& 
+		(0 == strncmp(passwd, created_pass, sizeof(created_pass)))) {
 		*auth_success = true;
 	}
 	return true;
