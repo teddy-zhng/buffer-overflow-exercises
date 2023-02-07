@@ -4,7 +4,7 @@ import time
 import random
 
 names = ['Mav', 'Adam', 'Teddy', 'Ari', 'Donovan', 'Diana', 
-'Eduardo', 'Emanuel', 'Nourya', 'Ron', 'Tobias', 'Vrushank']
+'Eduardo', 'Emanuel', 'Nourya', 'Ron', 'Tobias', 'Vrushank', 'Ismail']
 
 #just for reference
 # handlers = {
