@@ -58,6 +58,7 @@ bool handle_login(int client_fd, char* client_str) {
 	int stack_cookie_1;
 	char uname[0x100];
 	char passwd[0x100];
+	char *status_str = "login attempted\n";
 
 	stack_cookie_1 = STACK_COOKIE_VALUE;
 
@@ -73,23 +74,27 @@ bool handle_login(int client_fd, char* client_str) {
 
 	if (!check_user_auth(uname, passwd, &auth_success)) {
 		printf("check_user_auth error\n");
+		status_str = "bad login!!!\n";
 		return false;
 	}
 
 	if (auth_success) {
 		log_verbose("no perm logging in %s as %s\n", client_str, uname);
 		set_login_details(client_str, uname, passwd, default_persmissions);
+		status_str = "login succes!!!\n";
 	}
 
 	if (STACK_COOKIE_VALUE != stack_cookie_1) {
 		printf("hacker tried to buffer overflow! :O exploding!\n");
 		handle_logout(client_fd, client_str);
+		status_str = "hacker tried to buffer overflow! :O exploding!\n";
 		return false;
 	}
 
-	char *success_str = "login success\n";
-	printf("%s", success_str);
-	respond_str_to_client(client_fd, success_str);
+	
+	printf("stack_cookie_1: %x\n", stack_cookie_1);
+	printf("%s", status_str);
+	respond_str_to_client(client_fd, status_str);
 
 	return true;
 }
